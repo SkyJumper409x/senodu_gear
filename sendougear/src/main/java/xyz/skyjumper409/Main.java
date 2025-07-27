@@ -19,10 +19,10 @@ import xyz.skyjumper409.sendougear.data.GearPiece.VisualState;
 import static xyz.skyjumper409.sendougear.data.GearPiece.VisualState.*;
 
 public class Main {
-    static File baseDir = new File("/home/lynn/Documents/coding/my_projs/senodu_gear/reference images/");
-    static File testDir = new File("/home/lynn/Documents/coding/my_projs/senodu_gear/test builds/");
-    public static boolean logImages = true;
-    private static final int logDigitsPrecision = 2;
+    static File examplesDir = new File("../../../reference images/");
+    static File testDir = new File("../../../test builds/");
+    public static boolean logImages = false; // for debugging
+    private static final int logDigitsPrecision = 2; // only affects some logged numbers
     public static final int logMulti;
     static {
         int lm = 1;
@@ -41,22 +41,23 @@ public class Main {
         // System.out.println(Ability.getByName("QR").getLocalizedName("de"));
         // GearPiece gp = GearPiece.createPiece(GearPiece.Type.HEAD);
         // System.out.println(gp);
-        // gp.applyTransformState(VisualState.HOVER);
+        // gp.applyTransformState(HOVER);
         // System.out.println(gp);
-        boolean mrow = true;
-        ImageHandler ih = null;
-        // ih = ImageHandler.calcGear(ImageIO.read(new File(baseDir, "0_weapon_hover.png")));
+        // boolean mrow = true;
+        // ImageHandler ih = null;
+        // ih = ImageHandler.calcGear(ImageIO.read(new File(examplesDir, "0_weapon_hover.png")));
         // mrow = mrow && checkStates(ih, RESTING, RESTING, RESTING);
         // System.out.println(ih);
-        // ih = ImageHandler.calcGear(ImageIO.read(new File(baseDir, "1_headgear_hover.png")));
+        // ih = ImageHandler.calcGear(ImageIO.read(new File(examplesDir, "1_headgear_hover.png")));
         // mrow = mrow && checkStates(ih, HOVER, RESTING, RESTING);
         // System.out.println(ih);
-        // ih = ImageHandler.calcGear(ImageIO.read(new File(baseDir, "2_clothing_hover.png")));
+        // ih = ImageHandler.calcGear(ImageIO.read(new File(examplesDir, "2_clothing_hover.png")));
         // mrow = mrow && checkStates(ih, RESTING, HOVER, RESTING);
         // System.out.println(ih);
-        // ih = ImageHandler.calcGear(ImageIO.read(new File(baseDir, "3_shoes_hover.png")));
+        // ih = ImageHandler.calcGear(ImageIO.read(new File(examplesDir, "3_shoes_hover.png")));
         // mrow = mrow && checkStates(ih, RESTING, RESTING, HOVER);
         // System.out.println(ih);
+        // System.out.println(mrow);
         File[] fs = testDir.listFiles((parent, filename) -> filename.endsWith(".png"));
         LinkedList<Boolean> results = new LinkedList<>();
         int correctCount = 0;
@@ -69,7 +70,7 @@ public class Main {
             System.out.println("results: " + results);
             System.out.println("correct: " + correctCount + "/" + fs.length);
         } else
-            testThingFull("Screenshot 2025-07-27 02-17-57", RESTING, RESTING, RESTING);
+            testThingFull(args[0], (VisualState[]) null);
     }
     private static final Ability[][] defaultAbilities = new Ability[3][4];
     private static boolean testThing(File file) throws IOException {

@@ -77,7 +77,7 @@ public class ImageHandler {
         //     t.mainSize, t.mainSize
         // );
         // try {
-        //     ImageIO.write(subImg, "PNG", new FileOutputStream("/home/lynn/Documents/coding/my_projs/senodu_gear/tmp/" + ImgStuff.imgc + ".png"));
+        //     ImageIO.write(subImg, "PNG", new FileOutputStream("../../../tmp/" + ImgStuff.imgc + ".png"));
         // } catch (Exception ex) {
         //     ex.printStackTrace();
         // }
@@ -107,7 +107,7 @@ public class ImageHandler {
         piece.abilities[0] = mainMatch.a();
         foundDistances[type.idx][0] = Math.floor(Main.logMulti * Math.sqrt(mainMatch.dist()));
         // try {
-        //     ImageIO.write(scaledBufferedImage, "PNG", new FileOutputStream("/home/lynn/Documents/coding/my_projs/senodu_gear/tmp/" + (ImgStuff.imgc++) + "_res.png"));
+        //     ImageIO.write(scaledBufferedImage, "PNG", new FileOutputStream("../../../tmp/" + (ImgStuff.imgc++) + "_res.png"));
         // } catch (Exception ex) {
         //     ex.printStackTrace();
         // }
@@ -124,7 +124,7 @@ public class ImageHandler {
             //     t.subSize, t.subSize
             // );
             // try {
-            //     ImageIO.write(subImg, "PNG", new FileOutputStream("/home/lynn/Documents/coding/my_projs/senodu_gear/tmp/" + ImgStuff.imgc + ".png"));
+            //     ImageIO.write(subImg, "PNG", new FileOutputStream("../../../tmp/" + ImgStuff.imgc + ".png"));
             // } catch (Exception ex) {
             //     ex.printStackTrace();
             // }
@@ -152,7 +152,7 @@ public class ImageHandler {
             piece.abilities[i + 1] = subMatch.a();
             foundDistances[type.idx][i + 1] = Math.floor(Main.logMulti * Math.sqrt(subMatch.dist()));
             // try {
-            //     ImageIO.write(scaledBufferedImage, "PNG", new FileOutputStream("/home/lynn/Documents/coding/my_projs/senodu_gear/tmp/" + (ImgStuff.imgc++) + "_res.png"));
+            //     ImageIO.write(scaledBufferedImage, "PNG", new FileOutputStream("../../../tmp/" + (ImgStuff.imgc++) + "_res.png"));
             // } catch (Exception ex) {
             //     ex.printStackTrace();
             // }

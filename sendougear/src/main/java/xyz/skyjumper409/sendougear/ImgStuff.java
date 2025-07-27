@@ -26,7 +26,7 @@ public class ImgStuff {
             mw, mh
         );
         // try {
-        //     ImageIO.write(subImg, "PNG", new FileOutputStream("/home/lynn/Documents/coding/my_projs/senodu_gear/tmp/" + (imgc++) + ".png"));
+        //     ImageIO.write(subImg, "PNG", new FileOutputStream("../../../tmp/" + (imgc++) + ".png"));
         // } catch (Exception ex) {
         //     ex.printStackTrace();
         // }
@@ -127,7 +127,7 @@ public class ImgStuff {
     public static void logImage(BufferedImage img, String filename) {
         if(Main.logImages)
         try {
-            ImageIO.write(img, "PNG", new FileOutputStream("/home/lynn/Documents/coding/my_projs/senodu_gear/tmp/" + filename + ".png"));
+            ImageIO.write(img, "PNG", new FileOutputStream("../../../tmp/" + filename + ".png"));
         } catch (Exception ex) {
             ex.printStackTrace();
         }

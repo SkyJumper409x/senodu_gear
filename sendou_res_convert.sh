@@ -6,6 +6,17 @@ die() { yell "$*"; exit 111; };
 if [ $# -eq 0 ]; then
     die "not enough arguments"
 fi
+if [ "$1" = "--help" ] || [ "$1" = "-help" ] || [ "$1" = "-h" ]; then
+    echo -e 'Usage:
+sendou_res_convert.sh {--help,-help,-h}\tprints this message
+sendou_res_convert.sh <sendou_dir>\tactually does the setup stuffs
+
+sendou_dir should be the directory into which https://github.com/sendou-ink/sendou.ink was cloned
+From the sendou.ink stuff, the following directories must be present:
+sendou.ink/locales/
+sendou.ink/public/static-assets/img/abilities/
+'
+fi
 
 sendou_dir="$1"
 input_dir="$sendou_dir/locales"
@@ -51,7 +62,7 @@ conv_file() {
     out_f="$output_dir/$(echo $out_fn | tr '-' '_').json"
     echo $'{\n'"$(cat "$in_f" | grep -iE "$internal_names" | head -c-2)"$'\n}' > "$out_f"
 }
-langs=($(ls -1 /home/lynn/sendou.ink/locales))
+langs=($(ls -1 "$input_dir"))
 for lang in "${langs[@]}"; do
     conv_file "$lang"
 done
