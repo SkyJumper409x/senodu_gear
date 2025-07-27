@@ -170,6 +170,12 @@ public class GearPiece {
         public String toString() {
             return name;
         }
+        public static VisualState valueOf(String name) {
+            for (VisualState state : values())
+                if(state.name.equalsIgnoreCase(name))
+                    return state;
+            return null;
+        }
     }
     static {
         // do these first bc they're needed for VisualState's static initializer

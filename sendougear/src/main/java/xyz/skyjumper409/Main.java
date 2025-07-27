@@ -3,6 +3,7 @@ package xyz.skyjumper409;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.imageio.ImageIO;
@@ -57,33 +58,58 @@ public class Main {
         // mrow = mrow && checkStates(ih, RESTING, RESTING, HOVER);
         // System.out.println(ih);
         File[] fs = testDir.listFiles((parent, filename) -> filename.endsWith(".png"));
-        if(args.length == 0)
-            for (File f : fs)
-                testThing(f);
-        else
+        LinkedList<Boolean> results = new LinkedList<>();
+        int correctCount = 0;
+        if(args.length == 0) {
+            for (File f : fs) {
+                boolean result = testThing(f);
+                results.add(result);
+                if(result) correctCount++;
+            }
+            System.out.println("results: " + results);
+            System.out.println("correct: " + correctCount + "/" + fs.length);
+        } else
             testThingFull("Screenshot 2025-07-27 02-17-57", RESTING, RESTING, RESTING);
     }
     private static final Ability[][] defaultAbilities = new Ability[3][4];
-    private static void testThing(File file) throws IOException {
+    private static boolean testThing(File file) throws IOException {
         String absPath = file.getAbsolutePath();
         System.out.println(absPath.substring(absPath.lastIndexOf("/") + 1));
-        File jsonFile = new File(testDir, absPath.substring(0, absPath.lastIndexOf(".")) + ".json");
+        File jsonFile = new File(absPath.substring(0, absPath.lastIndexOf(".")) + ".json");
+        VisualState[] testStates = new VisualState[3];
         if(jsonFile.isFile()) {
-            ImgStuff.correctEffects = abilitiesFromJsonFile(jsonFile);
-        } else System.err.println("[WARN] missing json file");
+            abilitiesFromJsonFile(jsonFile, ImgStuff.correctEffects, testStates);
+        } else {
+            System.err.println("[WARN] missing json file");
+            ImgStuff.correctEffects = defaultAbilities;
+        }
         ImageHandler ih = ImageHandler.calcGear(ImageIO.read(file));
         System.out.println(ih.getDetectedStates());
         System.out.println(ih.gear.toAbilitiesString());
+        boolean states = checkStates(ih, testStates);
+        boolean gear = checkGear(ih.gear, ImgStuff.correctEffects);
+        return states && gear;
     }
-    private static void testThingFull(String filename, VisualState... testStates) throws IOException {
+    private static boolean checkGear(Gear gear, Ability[][] testAbilities) {
+        for (int i = 0; i < 3; i++)
+            for (int j = 0; j < 4; j++)
+                if(!gear.get(i).abilities[j].equals(ImgStuff.correctEffects[i][j]))
+                    return false;
+        return true;
+    }
+    private static boolean testThingFull(String filename, VisualState... testStates) throws IOException {
         // ImgStuff.correctEffects[0][0] = Ability.getByName("CB");
         File jsonFile = new File(testDir, filename + ".json");
         if(jsonFile.isFile()) {
-            ImgStuff.correctEffects = abilitiesFromJsonFile(jsonFile);
-        } else System.err.println("[WARN] missing json file for filename \"" + filename + "\"");
+            VisualState[] targetArr = new VisualState[3];
+            if(testStates == null)
+                testStates = targetArr;
+            abilitiesFromJsonFile(jsonFile, ImgStuff.correctEffects, targetArr);
+        } else {
+            System.err.println("[WARN] missing json file for filename \"" + filename + "\"");
+            ImgStuff.correctEffects = defaultAbilities;
+        }
         ImageHandler ih = ImageHandler.calcGear(ImageIO.read(new File(testDir, filename + ".png")));
-        boolean statesCheck = checkStates(ih, testStates);
-        System.out.println("checkStates: " + statesCheck);
         // System.out.println(ih);
         System.out.println("Dists:");
         System.out.println("found" + (new String(new char[(5 + logDigitsPrecision) * 4 - 5]).replace("\0", " ")) + "\tcorrect");
@@ -98,27 +124,37 @@ public class Main {
             }
             System.out.println(nya);
         }
+        boolean states = checkStates(ih, testStates);
+        boolean gear = checkGear(ih.gear, ImgStuff.correctEffects);
+        return states && gear;
     }
-    private static Ability[][] abilitiesFromJsonFile(File jsonFile) throws IOException {
-        Ability[][] result = new Ability[3][4];
+    private static TestGear abilitiesFromJsonFile(File jsonFile, Ability[][] outAbilities, VisualState[] outStates) throws IOException {
+        TestGear result = null;
+        if(outAbilities != null && outStates != null)
+            result = new TestGear(outAbilities, outStates);
+        else
+            result = new TestGear();
+        Ability[][] abilities = result.abilities();
+        VisualState[] states = result.states();
         JSONArray arr = IOStuff.readJSONArray(jsonFile);
         for (int i = 0; i < 3; i++) {
             JSONObject obj = arr.getJSONObject(i);
             String name = obj.getString("name");
-            JSONArray abilities = obj.getJSONArray("abilities");
+            JSONArray abilitiesArr = obj.getJSONArray("abilities");
             int idx = GearPiece.Type.valueOf(name.toUpperCase()).idx;
             for (int j = 0; j < 4; j++) {
                 Ability a = Ability.UNKNOWN;
-                if(i < abilities.length()) {
-                    String aName = abilities.getString(j);
+                if(i < abilitiesArr.length()) {
+                    String aName = abilitiesArr.getString(j);
                     a = Ability.getByName(aName);
                     if(a == null) {
                         System.err.println("[WARN] Not an ability: \"" + aName + "\"");
                         a = Ability.UNKNOWN;
                     }
                 }
-                result[idx][j] = a;
+                abilities[idx][j] = a;
             }
+            states[i] = VisualState.valueOf(obj.getString("state"));
         }
         return result;
     }

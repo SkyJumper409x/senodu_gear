@@ -1,14 +1,17 @@
 [
   {
     "name": "head",
-    "abilities": [, , , ]
+    "abilities": ["OG", "IA", "IA", "ISS"],
+    "state": "resting"
   },
   {
     "name": "clothing",
-    "abilities": [, , , ]
+    "abilities": ["H", "QR", "BRU", "UNKNOWN"],
+    "state": "resting"
   },
   {
     "name": "shoes",
-    "abilities": [, , , ]
+    "abilities": ["SJ", "SSU", "QSJ", "ISM"],
+    "state": "resting"
   }
 ]
