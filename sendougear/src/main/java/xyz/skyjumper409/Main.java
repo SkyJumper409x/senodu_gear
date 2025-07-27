@@ -93,7 +93,7 @@ public class Main {
     private static boolean checkGear(Gear gear, Ability[][] testAbilities) {
         for (int i = 0; i < 3; i++)
             for (int j = 0; j < 4; j++)
-                if(!gear.get(i).abilities[j].equals(ImgStuff.correctEffects[i][j]))
+                if(!gear.get(i).abilities[j].equals(testAbilities[i][j]))
                     return false;
         return true;
     }
