@@ -1,0 +1,14 @@
+[
+  {
+    "name": "head",
+    "abilities": ["CB", "SRU", "RSU", "SSU"]
+  },
+  {
+    "name": "clothing",
+    "abilities": ["RSU", "RSU", "BRU", "QSJ"]
+  },
+  {
+    "name": "shoes",
+    "abilities": ["BRU", "RES", "SPU", "UNKNOWN"]
+  }
+]

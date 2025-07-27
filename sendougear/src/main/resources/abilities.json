@@ -1,0 +1,149 @@
+[
+  {
+    "short": "ISM",
+    "internal": "MainInk_Save",
+    "mainonly": false
+  },
+  {
+    "short": "ISS",
+    "internal": "SubInk_Save",
+    "mainonly": false
+  },
+  {
+    "short": "IRU",
+    "internal": "InkRecovery_Up",
+    "mainonly": false
+  },
+  {
+    "short": "RSU",
+    "internal": "HumanMove_Up",
+    "mainonly": false
+  },
+  {
+    "short": "SSU",
+    "internal": "SquidMove_Up",
+    "mainonly": false
+  },
+  {
+    "short": "SCU",
+    "internal": "SpecialIncrease_Up",
+    "mainonly": false
+  },
+  {
+    "short": "SS",
+    "internal": "RespawnSpecialGauge_Save",
+    "mainonly": false
+  },
+  {
+    "short": "SPU",
+    "internal": "SpecialSpec_Up",
+    "mainonly": false
+  },
+  {
+    "short": "QR",
+    "internal": "RespawnTime_Save",
+    "mainonly": false
+  },
+  {
+    "short": "QSJ",
+    "internal": "JumpTime_Save",
+    "mainonly": false
+  },
+  {
+    "short": "BRU",
+    "internal": "SubSpec_Up",
+    "mainonly": false
+  },
+  {
+    "short": "RES",
+    "internal": "OpInkEffect_Reduction",
+    "mainonly": false
+  },
+  {
+    "short": "SRU",
+    "internal": "SubEffect_Reduction",
+    "mainonly": false
+  },
+  {
+    "short": "IA",
+    "internal": "Action_Up",
+    "mainonly": false
+  },
+  {
+    "short": "OG",
+    "internal": "StartAllUp",
+    "mainonly": true,
+    "exclusivePiece": "head"
+  },
+  {
+    "short": "LDE",
+    "internal": "EndAllUp",
+    "mainonly": true,
+    "exclusivePiece": "head"
+  },
+  {
+    "short": "T",
+    "internal": "MinorityUp",
+    "mainonly": true,
+    "exclusivePiece": "head"
+  },
+  {
+    "short": "CB",
+    "internal": "ComeBack",
+    "mainonly": true,
+    "exclusivePiece": "head"
+  },
+  {
+    "short": "NS",
+    "internal": "SquidMoveSpatter_Reduction",
+    "mainonly": true,
+    "exclusivePiece": "clothing"
+  },
+  {
+    "short": "H",
+    "internal": "DeathMarking",
+    "mainonly": true,
+    "exclusivePiece": "clothing"
+  },
+  {
+    "short": "TI",
+    "internal": "ThermalInk",
+    "mainonly": true,
+    "exclusivePiece": "clothing"
+  },
+  {
+    "short": "RP",
+    "internal": "Exorcist",
+    "mainonly": true,
+    "exclusivePiece": "clothing"
+  },
+  {
+    "short": "AD",
+    "internal": "ExSkillDouble",
+    "mainonly": true,
+    "exclusivePiece": "clothing"
+  },
+  {
+    "short": "SJ",
+    "internal": "SuperJumpSign_Hide",
+    "mainonly": true,
+    "exclusivePiece": "shoes"
+  },
+  {
+    "short": "OS",
+    "internal": "ObjectEffect_Up",
+    "mainonly": true,
+    "exclusivePiece": "shoes"
+  },
+  {
+    "short": "DR",
+    "internal": "SomersaultLanding",
+    "mainonly": true,
+    "exclusivePiece": "shoes"
+  },
+  {
+    "short": "UNKNOWN",
+    "internal": "unknown",
+    "mainonly": false
+  }
+]

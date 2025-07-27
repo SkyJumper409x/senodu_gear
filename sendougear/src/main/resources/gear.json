@@ -1,0 +1,48 @@
+{
+  "pieces": [
+    {
+      "name": "head",
+      "restingCoord": {
+        "main": [555, 981],
+        "sub": [604, 985]
+      }
+    },
+    {
+      "name": "clothing",
+      "restingCoord": {
+        "main": [773, 981],
+        "sub": [822, 985]
+      }
+    },
+    {
+      "name": "shoes",
+      "restingCoord": {
+        "main": [991, 981],
+        "sub": [1040, 985]
+      }
+    }
+  ],
+  "stateTransforms": {
+    "resting": {
+      "shift": { "main": [0, 0], "sub": [[0, 4, 5], 0] },
+      "rotate": [0, 0],
+      "size": {"main": 43, "sub": 34},
+      "grayDetectCoord": [552, 976],
+      "grayDetectSize": [6, 9]
+    },
+    "hover": {
+      "shift": { "main": [-8, -8], "sub": [[-4, 6, 5], -8] },
+      "rotate": [0, 0],
+      "size": {"main": 47, "sub": 38},
+      "grayDetectCoord": [543, 968],
+      "grayDetectSize": [6, 9]
+    },
+    "selected": {
+      "shift": { "main": [0, 0], "sub": [[0, 0, 0], 0] },
+      "rotate": [0, 0],
+      "size": {"main": 0, "sub": 0},
+      "grayDetectCoord": [0, 0],
+      "grayDetectSize": [6, 9]
+    }
+  }
+}

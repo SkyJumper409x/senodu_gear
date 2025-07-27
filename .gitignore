@@ -1,0 +1,15 @@
+# ide
+.vscode/
+
+# java
+sendougear/target/*
+*.class
+*.jar
+
+# resource images
+sendougear/src/main/resources/img/ability/*.png
+sendougear/src/main/resources/lang/*.json
+
+# stuff
+reference images/
+tmp/
