@@ -49,11 +49,12 @@ public class Main {
         // ih = ImageHandler.calcGear(ImageIO.read(new File(baseDir, "3_shoes_hover.png")));
         // mrow = mrow && checkStates(ih, RESTING, RESTING, HOVER);
         // System.out.println(ih);
-        testThingFull("Screenshot 2025-07-27 02-17-57", RESTING, RESTING, RESTING);
         File[] fs = testDir.listFiles();
         if(args.length > 0)
             for (File f : fs)
                 testThing(f);
+        else
+            testThingFull("Screenshot 2025-07-27 02-17-57", RESTING, RESTING, RESTING);
     }
     private static void testThing(File file) throws IOException {
         System.out.println(file.getAbsolutePath().substring(file.getAbsolutePath().lastIndexOf("/") + 1));
