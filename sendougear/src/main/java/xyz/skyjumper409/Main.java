@@ -19,8 +19,8 @@ import xyz.skyjumper409.sendougear.data.GearPiece.VisualState;
 import static xyz.skyjumper409.sendougear.data.GearPiece.VisualState.*;
 
 public class Main {
-    static File examplesDir = new File("../../../reference images/");
-    static File testDir = new File("../../../test builds/");
+    static File examplesDir = new File(Const.resourcesDir, "../../../reference images/");
+    static File testDir = new File(Const.resourcesDir, "../../../test builds/");
     public static boolean logImages = false; // for debugging
     private static final int logDigitsPrecision = 2; // only affects some logged numbers
     public static final int logMulti;

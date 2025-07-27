@@ -139,7 +139,7 @@ public class GearPiece {
         }
         static {
             try {
-                JSONObject obj = IOStuff.readJSONObject(new java.io.File("gear.json"));
+                JSONObject obj = IOStuff.readJSONObject(new java.io.File(Const.resourcesDir, "gear.json"));
                 JSONArray gearArr = obj.getJSONArray("pieces");
                 for (int i = 0; i < gearArr.length(); i++) {
                     JSONObject gearObj = gearArr.getJSONObject(i);

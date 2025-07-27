@@ -14,8 +14,11 @@ public class I18n {
     private static I18n currentLocale;
     static {
         try {
-            System.out.println(new File("").getAbsolutePath());
+            // System.out.println(new File("").getAbsolutePath());
             String[] fns = (Const.langDir.list((parent, fn) -> { return fn.endsWith(".json"); }));
+            if(fns.length == 0) {
+
+            }
             for (String fn : fns) {
                 String localeName = fn.substring(0, fn.length() - 5);
                 I18n i18n = null;
