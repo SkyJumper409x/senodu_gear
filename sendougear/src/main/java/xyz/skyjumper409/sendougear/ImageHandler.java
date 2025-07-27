@@ -48,7 +48,7 @@ public class ImageHandler {
         int mw = matchImg.getWidth(), mh = matchImg.getHeight();
         for (VisualState state : VisualState.values()) {
             long dist = ImgStuff.thing(img, state.grayDetectCoord, GearPiece.createPiece(type).transform().restingMain.x() -
-                gear.head.transform().restingMain.x(), mw, mh, matchImg, true);
+                gear.head.transform().restingMain.x(), mw, mh, matchImg, null, true);
             if(dist < closestDistance) {
                 closestDistance = dist;
                 closestState = state;
@@ -60,7 +60,8 @@ public class ImageHandler {
     public double[][] foundDistances = new double[3][4];
     private void detectGearPiece(Type type) {
         GearPiece piece = gear.get(type);
-        FullTransform t = piece.applyTransformState(states[type.idx]);
+        VisualState state = states[type.idx];
+        FullTransform t = piece.applyTransformState(state);
         // // BufferedImage mainImage = img.getSubimage(t.main.x(), t.main.y(), t.mainSize, t.mainSize);
         // // BufferedImage[] subsImages = new BufferedImage[3];
         // // for (int i = 0; i < 3; i++) {
@@ -101,7 +102,7 @@ public class ImageHandler {
         //         scaledBufferedImage = sbi;
         //     }
         // }
-        MatchedAbility mainMatch = ImgStuff.findClosestAbility(img, t, type, 0);
+        MatchedAbility mainMatch = ImgStuff.findClosestAbility(img, t, type, 0, state.abilityBgImg);
         piece.abilities[0] = mainMatch.a();
         foundDistances[type.idx][0] = Math.floor(Main.logMulti * Math.sqrt(mainMatch.dist()));
         // try {
@@ -146,7 +147,7 @@ public class ImageHandler {
             //         scaledBufferedImage = sbi;
             //     }
             // }
-            MatchedAbility subMatch = ImgStuff.findClosestAbility(img, t, type, i + 1);
+            MatchedAbility subMatch = ImgStuff.findClosestAbility(img, t, type, i + 1, state.abilityBgImg);
             piece.abilities[i + 1] = subMatch.a();
             foundDistances[type.idx][i + 1] = Math.floor(Main.logMulti * Math.sqrt(subMatch.dist()));
             // try {

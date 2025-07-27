@@ -5,6 +5,7 @@ import java.util.List;
 import javax.imageio.ImageIO;
 
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -101,7 +102,8 @@ public class GearPiece {
         public final int mainSize, subSize;
         public final BiInt grayDetectCoord;
         public final BiInt grayDetectSize;
-        private VisualState(String name, BiInt mainShift, List<BiInt> subShifts, BiInt rotate, int mainSize, int subSize, BiInt grayDetectCoord, BiInt grayDetectSize) {
+        public final BufferedImage abilityBgImg;
+        private VisualState(String name, BiInt mainShift, List<BiInt> subShifts, BiInt rotate, int mainSize, int subSize, BiInt grayDetectCoord, BiInt grayDetectSize, BufferedImage abilityBgImg) {
             this.name = name;
             this.mainShift = mainShift.unmodifiableClone();
             this.subShifts = subShifts;
@@ -110,8 +112,9 @@ public class GearPiece {
             this.subSize = subSize;
             this.grayDetectCoord = grayDetectCoord.unmodifiableClone();
             this.grayDetectSize = grayDetectSize.unmodifiableClone();
+            this.abilityBgImg = abilityBgImg;
         }
-        private static VisualState toVisualState(String name, JSONObject transformsObj) {
+        private static VisualState toVisualState(String name, JSONObject transformsObj) throws IOException {
             JSONObject transformObj = transformsObj.getJSONObject(name);
             JSONObject shiftObj = transformObj.getJSONObject("shift");
 
@@ -129,9 +132,10 @@ public class GearPiece {
             JSONObject sizeObj = transformObj.getJSONObject("size");
 
             BiInt grayDetectCoord = new BiInt(transformObj.getJSONArray("grayDetectCoord"));
-
             BiInt grayDetectSize = new BiInt(transformObj.getJSONArray("grayDetectSize"));
-            return new VisualState(name, mainShift, Collections.unmodifiableList(subS), rotate, sizeObj.getInt("main"), sizeObj.getInt("sub"), grayDetectCoord, grayDetectSize);
+
+            BufferedImage abilityBgImg = name.equalsIgnoreCase("selected") ? null : ImageIO.read(new java.io.File(Const.imagesDir, name + "_bg.png"));
+            return new VisualState(name, mainShift, Collections.unmodifiableList(subS), rotate, sizeObj.getInt("main"), sizeObj.getInt("sub"), grayDetectCoord, grayDetectSize, abilityBgImg);
         }
         static {
             try {
