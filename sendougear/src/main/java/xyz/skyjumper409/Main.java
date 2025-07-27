@@ -30,6 +30,13 @@ public class Main {
         logMulti = lm;
     }
     public static void main(String[] args) throws Exception {
+        Ability thermalInk = Ability.getByName("TI");
+        for (int i = 0; i < 3; i++) {
+            defaultAbilities[i][0] = Ability.UNKNOWN;
+            for (int j = 1; j < 4; j++) {
+                defaultAbilities[i][j] = thermalInk;
+            }
+        }
         // System.out.println(Ability.getByName("QR").getLocalizedName("de"));
         // GearPiece gp = GearPiece.createPiece(GearPiece.Type.HEAD);
         // System.out.println(gp);
@@ -49,15 +56,21 @@ public class Main {
         // ih = ImageHandler.calcGear(ImageIO.read(new File(baseDir, "3_shoes_hover.png")));
         // mrow = mrow && checkStates(ih, RESTING, RESTING, HOVER);
         // System.out.println(ih);
-        File[] fs = testDir.listFiles();
-        if(args.length > 0)
+        File[] fs = testDir.listFiles((parent, filename) -> filename.endsWith(".png"));
+        if(args.length == 0)
             for (File f : fs)
                 testThing(f);
         else
             testThingFull("Screenshot 2025-07-27 02-17-57", RESTING, RESTING, RESTING);
     }
+    private static final Ability[][] defaultAbilities = new Ability[3][4];
     private static void testThing(File file) throws IOException {
-        System.out.println(file.getAbsolutePath().substring(file.getAbsolutePath().lastIndexOf("/") + 1));
+        String absPath = file.getAbsolutePath();
+        System.out.println(absPath.substring(absPath.lastIndexOf("/") + 1));
+        File jsonFile = new File(testDir, absPath.substring(0, absPath.lastIndexOf(".")) + ".json");
+        if(jsonFile.isFile()) {
+            ImgStuff.correctEffects = abilitiesFromJsonFile(jsonFile);
+        } else System.err.println("[WARN] missing json file");
         ImageHandler ih = ImageHandler.calcGear(ImageIO.read(file));
         System.out.println(ih.getDetectedStates());
         System.out.println(ih.gear.toAbilitiesString());
@@ -66,25 +79,7 @@ public class Main {
         // ImgStuff.correctEffects[0][0] = Ability.getByName("CB");
         File jsonFile = new File(testDir, filename + ".json");
         if(jsonFile.isFile()) {
-            JSONArray arr = IOStuff.readJSONArray(jsonFile);
-            for (int i = 0; i < 3; i++) {
-                JSONObject obj = arr.getJSONObject(i);
-                String name = obj.getString("name");
-                JSONArray abilities = obj.getJSONArray("abilities");
-                int idx = GearPiece.Type.valueOf(name.toUpperCase()).idx;
-                for (int j = 0; j < 4; j++) {
-                    Ability a = Ability.UNKNOWN;
-                    if(i < abilities.length()) {
-                        String aName = abilities.getString(j);
-                        a = Ability.getByName(aName);
-                        if(a == null) {
-                            System.err.println("[WARN] Not an ability: \"" + aName + "\"");
-                            a = Ability.UNKNOWN;
-                        }
-                    }
-                    ImgStuff.correctEffects[idx][j] = a;
-                }
-            }
+            ImgStuff.correctEffects = abilitiesFromJsonFile(jsonFile);
         } else System.err.println("[WARN] missing json file for filename \"" + filename + "\"");
         ImageHandler ih = ImageHandler.calcGear(ImageIO.read(new File(testDir, filename + ".png")));
         boolean statesCheck = checkStates(ih, testStates);
@@ -103,6 +98,29 @@ public class Main {
             }
             System.out.println(nya);
         }
+    }
+    private static Ability[][] abilitiesFromJsonFile(File jsonFile) throws IOException {
+        Ability[][] result = new Ability[3][4];
+        JSONArray arr = IOStuff.readJSONArray(jsonFile);
+        for (int i = 0; i < 3; i++) {
+            JSONObject obj = arr.getJSONObject(i);
+            String name = obj.getString("name");
+            JSONArray abilities = obj.getJSONArray("abilities");
+            int idx = GearPiece.Type.valueOf(name.toUpperCase()).idx;
+            for (int j = 0; j < 4; j++) {
+                Ability a = Ability.UNKNOWN;
+                if(i < abilities.length()) {
+                    String aName = abilities.getString(j);
+                    a = Ability.getByName(aName);
+                    if(a == null) {
+                        System.err.println("[WARN] Not an ability: \"" + aName + "\"");
+                        a = Ability.UNKNOWN;
+                    }
+                }
+                result[idx][j] = a;
+            }
+        }
+        return result;
     }
     private static boolean checkStates(ImageHandler ih, VisualState... testStates) {
         List<VisualState> states = ih.getDetectedStates();

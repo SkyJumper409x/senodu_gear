@@ -24,6 +24,7 @@ public class ImageHandler {
     }
     public static ImageHandler calcGear(BufferedImage image) {
         if(image == null) {
+            System.err.println("[WARN] image == null");
             return null;
         }
         ImageHandler ih = new ImageHandler(image);
