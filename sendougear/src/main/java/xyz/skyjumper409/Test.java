@@ -23,8 +23,6 @@ public class Test {
     static File examplesDir = new File(Const.resourcesDir, "../../../reference images/");
     static File testDir = new File(Const.resourcesDir, "../../../test builds/");
     public static void main(String[] args) throws Exception {
-        System.out.println("&build2=U,U,U,U,U,U,U,U,U,U,U,U&lde=0&focused=1".replaceAll(",", "%2C"));
-        System.exit(0);
         for (int i = 0; i < 3; i++)
             for (int j = 0; j < 4; j++)
                 defaultAbilities[i][j] = Ability.NULL_ABILITY;
