@@ -1,0 +1,17 @@
+[
+  {
+    "name": "head",
+    "abilities": ["QR", "SSU", "RES", "QR"],
+    "state": "hover"
+  },
+  {
+    "name": "clothing",
+    "abilities": ["ISS", "SRU", "QR", "SPU"],
+    "state": "resting"
+  },
+  {
+    "name": "shoes",
+    "abilities": ["SCU", "SCU", "SCU", "SCU"],
+    "state": "resting"
+  }
+]
