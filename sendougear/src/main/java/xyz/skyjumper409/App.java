@@ -16,7 +16,9 @@ public class App {
     JPanel panel;
     JLabel label, resultLabel;
     JButton button;
-    Color bg = new Color(0x00102f); // Camellia - "#1f1e33 (#00102g Version)" is such a good song
+    Color
+        fg = Color.WHITE,
+        bg = new Color(0x00102f); // Camellia - "#1f1e33 (#00102g Version)" is such a good song
     public static void main(String[] args) {
         (new App()).gui();
     }

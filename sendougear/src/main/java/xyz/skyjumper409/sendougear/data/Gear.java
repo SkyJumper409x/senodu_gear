@@ -30,7 +30,7 @@ public class Gear {
         if(Main.cfg.doLogGearEffs())
             for (int i = 0; i < pieces.length; i++)
                 sb = sb.append(pieces[i].toAbilitiesString()).append("\n");
-        if(Main.cfg.doLogGearEffs()) {
+        if(Main.cfg.doLogGearLink()) {
             sb = sb.append("https://sendou.ink/analyzer?weapon=0&build=");
             for (int i = 0; i < pieces.length; i++) {
                 Ability[] abilities = pieces[i].abilities;
