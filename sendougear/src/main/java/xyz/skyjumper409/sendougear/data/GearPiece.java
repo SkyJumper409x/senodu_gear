@@ -2,8 +2,6 @@ package xyz.skyjumper409.sendougear.data;
 
 import java.util.List;
 
-import javax.imageio.ImageIO;
-
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -134,12 +132,12 @@ public class GearPiece {
             BiInt grayDetectCoord = new BiInt(transformObj.getJSONArray("grayDetectCoord"));
             BiInt grayDetectSize = new BiInt(transformObj.getJSONArray("grayDetectSize"));
 
-            BufferedImage abilityBgImg = name.equalsIgnoreCase("selected") ? null : ImageIO.read(new java.io.File(Const.imagesDir, name + "_bg.png"));
+            BufferedImage abilityBgImg = name.equalsIgnoreCase("selected") ? null : IOStuff.readResourceImage("/img/" + name + "_bg.png");
             return new VisualState(name, mainShift, Collections.unmodifiableList(subS), rotate, sizeObj.getInt("main"), sizeObj.getInt("sub"), grayDetectCoord, grayDetectSize, abilityBgImg);
         }
         static {
             try {
-                JSONObject obj = IOStuff.readJSONObject(new java.io.File(Const.resourcesDir, "gear.json"));
+                JSONObject obj = IOStuff.readResourceJSONObject("/gear.json");
                 JSONArray gearArr = obj.getJSONArray("pieces");
                 for (int i = 0; i < gearArr.length(); i++) {
                     JSONObject gearObj = gearArr.getJSONObject(i);
@@ -158,7 +156,7 @@ public class GearPiece {
                 RESTING = toVisualState("resting", transformsObj);
                 HOVER = toVisualState("hover", transformsObj);
                 SELECTED = toVisualState("selected", transformsObj);
-                matchImg = ImageIO.read(new java.io.File(Const.imagesDir, "match.png"));
+                matchImg = IOStuff.readResourceImage("/img/match.png");
             } catch (Exception ex) {
                 ex.printStackTrace(System.err);
                 System.exit(111);

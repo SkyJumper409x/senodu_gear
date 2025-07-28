@@ -1,7 +1,7 @@
 package xyz.skyjumper409.sendougear.data;
 
-import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
@@ -17,7 +17,7 @@ public class I18n {
     static {
         try {
             // System.out.println(new File("").getAbsolutePath());
-            String[] fns = (Const.langDir.list((parent, fn) -> { return fn.endsWith(".json"); }));
+            String[] fns = (new java.io.File(I18n.class.getResource("/lang/").toURI()).list((parent, fn) -> { return fn.endsWith(".json"); }));
             if(fns.length == 0) {
 
             }
@@ -35,8 +35,8 @@ public class I18n {
                 }
                 availableLocales.put(localeName, i18n);
             }
-        } catch (IOException ioex) {
-            ioex.printStackTrace();
+        } catch (Exception ex) {
+            ex.printStackTrace();
             System.exit(2);
         }
         en = availableLocales.get("en");
@@ -61,14 +61,15 @@ public class I18n {
     public final String localeName;
     private final JSONObject translationsObject;
     private final java.util.Set<String> keySet;
-    private I18n() throws IOException {
+    private I18n() throws IOException, URISyntaxException {
         this(null, null);
     }
-    private I18n(String localeName, String localeFilename) throws IOException {
+    private I18n(String localeName, String localeFilename) throws IOException, URISyntaxException {
         this.localeName = localeName;
+
         translationsObject = new JSONObject(new String(
             Files.readAllBytes(Paths.get(
-                new File(Const.langDir, localeFilename).toURI()
+                getClass().getResource("/lang/" + localeFilename).toURI()
             )), "UTF-8"
         ));
         keySet = translationsObject.keySet();

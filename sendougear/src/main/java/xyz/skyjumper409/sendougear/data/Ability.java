@@ -1,15 +1,12 @@
 package xyz.skyjumper409.sendougear.data;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
-import javax.imageio.ImageIO;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -25,7 +22,7 @@ public class Ability {
         try {
             HashMap<String, Ability> aShort = new HashMap<>(), aInternal = new HashMap<>();
             HashSet<Ability> aMain = new HashSet<>(), aSub = new HashSet<>(), vals = new HashSet<>();
-            JSONArray abilitiesJSON = IOStuff.readJSONArray(new File(Const.resourcesDir, "abilities.json"));
+            JSONArray abilitiesJSON = IOStuff.readResourceJSONArray("/abilities.json");
             for (int i = 0; i < abilitiesJSON.length(); i++) {
                 JSONObject obj = abilitiesJSON.getJSONObject(i);
                 String shortName = obj.getString("short");
@@ -83,7 +80,7 @@ public class Ability {
             this.image = UNKNOWN.image;
         } else {
             this.shortName = shortName.toUpperCase();
-            this.image = ImageIO.read(new File(Const.abilityImagesDir, this.shortName + ".png"));
+            this.image = IOStuff.readResourceImage("/img/ability" + this.shortName + ".png");
         }
         this.translationKey = "ABILITY_" + this.shortName;
         this.internalName = internalName;
