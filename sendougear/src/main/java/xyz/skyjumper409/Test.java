@@ -17,39 +17,17 @@ import xyz.skyjumper409.sendougear.ImgStuff;
 import xyz.skyjumper409.sendougear.data.*;
 import xyz.skyjumper409.sendougear.data.GearPiece.VisualState;
 import static xyz.skyjumper409.sendougear.data.GearPiece.VisualState.*;
+import static xyz.skyjumper409.Logger.*;
 
 public class Test {
     static File examplesDir = new File(Const.resourcesDir, "../../../reference images/");
     static File testDir = new File(Const.resourcesDir, "../../../test builds/");
     public static final Config cfg = new Config();
     public static void main(String[] args) throws Exception {
-        Ability thermalInk = Ability.getByName("TI");
-        for (int i = 0; i < 3; i++) {
-            defaultAbilities[i][0] = Ability.UNKNOWN;
-            for (int j = 1; j < 4; j++) {
-                defaultAbilities[i][j] = thermalInk;
-            }
-        }
-        // System.out.println(Ability.getByName("QR").getLocalizedName("de"));
-        // GearPiece gp = GearPiece.createPiece(GearPiece.Type.HEAD);
-        // System.out.println(gp);
-        // gp.applyTransformState(HOVER);
-        // System.out.println(gp);
-        // boolean mrow = true;
-        // ImageHandler ih = null;
-        // ih = ImageHandler.calcGear(ImageIO.read(new File(examplesDir, "0_weapon_hover.png")));
-        // mrow = mrow && checkStates(ih, RESTING, RESTING, RESTING);
-        // System.out.println(ih);
-        // ih = ImageHandler.calcGear(ImageIO.read(new File(examplesDir, "1_headgear_hover.png")));
-        // mrow = mrow && checkStates(ih, HOVER, RESTING, RESTING);
-        // System.out.println(ih);
-        // ih = ImageHandler.calcGear(ImageIO.read(new File(examplesDir, "2_clothing_hover.png")));
-        // mrow = mrow && checkStates(ih, RESTING, HOVER, RESTING);
-        // System.out.println(ih);
-        // ih = ImageHandler.calcGear(ImageIO.read(new File(examplesDir, "3_shoes_hover.png")));
-        // mrow = mrow && checkStates(ih, RESTING, RESTING, HOVER);
-        // System.out.println(ih);
-        // System.out.println(mrow);
+        for (int i = 0; i < 3; i++)
+            for (int j = 0; j < 4; j++)
+                defaultAbilities[i][j] = Ability.NULL_ABILITY;
+        miscTests();
         File[] fs = testDir.listFiles((parent, filename) -> filename.endsWith(".png"));
         LinkedList<Boolean> results = new LinkedList<>();
         int correctCount = 0;
@@ -59,15 +37,25 @@ public class Test {
                 results.add(result);
                 if(result) correctCount++;
             }
-            System.out.println("results: " + results);
-            System.out.println("correct: " + correctCount + "/" + fs.length);
+            info("results: " + results);
+            info("correct: " + correctCount + "/" + fs.length);
         } else
             testThingFull(args[0], (VisualState[]) null);
+    }
+    private static void miscTests() {
+        info(Ability.getByName("QR").getLocalizedName("de"));
+        GearPiece gp = GearPiece.createPiece(GearPiece.Type.HEAD);
+        info(gp);
+        info(gp.applyTransformState(HOVER));
+        info(gp.applyTransformState(RESTING));
+        info("States: %s, %s, %s", RESTING, HOVER, SELECTED);
+        if(RESTING == null || HOVER == null || SELECTED == null)
+            err("one or more state(s) is null");
     }
     private static final Ability[][] defaultAbilities = new Ability[3][4];
     private static boolean testThing(File file) throws IOException {
         String absPath = file.getAbsolutePath();
-        System.out.println(absPath.substring(absPath.lastIndexOf("/") + 1));
+        info(absPath.substring(absPath.lastIndexOf("/") + 1));
         File jsonFile = new File(absPath.substring(0, absPath.lastIndexOf(".")) + ".json");
         VisualState[] testStates = new VisualState[3];
         if(jsonFile.isFile()) {
@@ -77,8 +65,8 @@ public class Test {
             ImgStuff.correctEffects = defaultAbilities;
         }
         ImageHandler ih = ImageHandler.calcGear(ImageIO.read(file));
-        System.out.println(ih.getDetectedStates());
-        System.out.println(ih.gear.toAbilitiesString());
+        info(ih.getDetectedStates());
+        info(ih.gear.toAbilitiesString());
         boolean states = checkStates(ih, testStates);
         boolean gear = checkGear(ih.gear, ImgStuff.correctEffects);
         return states && gear;
@@ -103,19 +91,19 @@ public class Test {
             ImgStuff.correctEffects = defaultAbilities;
         }
         ImageHandler ih = ImageHandler.calcGear(ImageIO.read(new File(testDir, filename + ".png")));
-        // System.out.println(ih);
-        System.out.println("Dists:");
-        System.out.println("found" + (new String(new char[(5 + cfg.logDigitsPrecision) * 4 - 5]).replace("\0", " ")) + "\tcorrect");
+        // info(ih);
+        info("Dists:");
+        info("found" + (new String(new char[(5 + cfg.logDigitsPrecision) * 4 - 5]).replace("\0", " ")) + "\tcorrect");
         for (int i = 0; i < 3; i++)
-            System.out.println((Arrays.toString(ih.foundDistances[i]) + "\t" + Arrays.toString(ImgStuff.correctDistances[i])).replaceAll("\\.0",""));
-        System.out.println("Gear:");
-        System.out.println(ih.gear.toAbilitiesString());
+            info((Arrays.toString(ih.foundDistances[i]) + "\t" + Arrays.toString(ImgStuff.correctDistances[i])).replaceAll("\\.0",""));
+        info("Gear:");
+        info(ih.gear.toAbilitiesString());
         for (int i = 0; i < 3; i++) {
         String nya = "";
             for (int j = 0; j < 4; j++) {
                 nya += Math.floor(ImgStuff.correctDistances[i][j]*10) == Math.floor(ih.foundDistances[i][j]*10) ? "X" : ".";
             }
-            System.out.println(nya);
+            info(nya);
         }
         boolean states = checkStates(ih, testStates);
         boolean gear = checkGear(ih.gear, ImgStuff.correctEffects);

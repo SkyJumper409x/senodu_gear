@@ -18,12 +18,13 @@ import xyz.skyjumper409.sendougear.IOStuff;
 
 public class Ability {
     public static final Map<String, Ability> byShort, byInternal;
-    public static final Set<Ability> mainOnly, noMainOnly;
+    public static final Set<Ability> mainOnly, noMainOnly, values;
     public static final Ability UNKNOWN;
+    public static final Ability NULL_ABILITY;
     static {
         try {
             HashMap<String, Ability> aShort = new HashMap<>(), aInternal = new HashMap<>();
-            HashSet<Ability> aMain = new HashSet<>(), aSub = new HashSet<>();
+            HashSet<Ability> aMain = new HashSet<>(), aSub = new HashSet<>(), vals = new HashSet<>();
             JSONArray abilitiesJSON = IOStuff.readJSONArray(new File(Const.resourcesDir, "abilities.json"));
             for (int i = 0; i < abilitiesJSON.length(); i++) {
                 JSONObject obj = abilitiesJSON.getJSONObject(i);
@@ -40,22 +41,34 @@ public class Ability {
                     aMain.add(a);
                 else
                     aSub.add(a);
+                vals.add(a);
             }
             byShort = Collections.unmodifiableMap(aShort);
             byInternal = Collections.unmodifiableMap(aInternal);
             mainOnly = Collections.unmodifiableSet(aMain);
             noMainOnly = Collections.unmodifiableSet(aSub);
+            values = Collections.unmodifiableSet(vals);
             UNKNOWN = getByName("UNKNOWN");
+            NULL_ABILITY = new Ability(false, null, null, "NULL_ABILITY");
         } catch (Exception ex) {
             ex.printStackTrace(System.err);
             System.exit(111);
             throw new RuntimeException(ex.getMessage(), ex.getCause());
         }
     }
+    public static Set<String> keySetShort() {
+        return byShort.keySet();
+    }
+    public static Set<String> keySetInternal() {
+        return byInternal.keySet();
+    }
     public static Ability getByName(String name) {
         Ability a = byShort.get(name);
         if(a != null) return a;
-        return byInternal.get(name);
+        a = byInternal.get(name);
+        if(a == null)
+            return Ability.NULL_ABILITY;
+        return a;
     }
 
     public final boolean isMainOnly;
@@ -65,10 +78,15 @@ public class Ability {
     Ability(boolean isMainOnly, GearPiece.Type exclusiveType, String shortName, String internalName) throws IOException {
         this.isMainOnly = isMainOnly;
         this.exclusiveType = exclusiveType;
-        this.shortName = shortName.toUpperCase();
+        if(shortName == null) {
+            this.shortName = "NULL";
+            this.image = UNKNOWN.image;
+        } else {
+            this.shortName = shortName.toUpperCase();
+            this.image = ImageIO.read(new File(Const.abilityImagesDir, this.shortName + ".png"));
+        }
         this.translationKey = "ABILITY_" + this.shortName;
         this.internalName = internalName;
-        image = ImageIO.read(new File(Const.abilityImagesDir, this.shortName + ".png"));
     }
     public String getLocalizedName(String locale) {
         return I18n.getTranslation(translationKey, locale);

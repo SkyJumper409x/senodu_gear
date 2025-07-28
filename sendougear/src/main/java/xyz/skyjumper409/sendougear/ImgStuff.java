@@ -13,6 +13,7 @@ import xyz.skyjumper409.Test;
 import xyz.skyjumper409.sendougear.data.*;
 import xyz.skyjumper409.sendougear.data.GearPiece.FullTransform;
 import xyz.skyjumper409.sendougear.data.GearPiece.Type;
+import static xyz.skyjumper409.Logger.*;
 
 public class ImgStuff {
     public static int imgc = 0;
@@ -43,7 +44,7 @@ public class ImgStuff {
             long dist = sum / divisor;
             return dist;
         } catch (ArithmeticException aex) {
-            System.out.println("wat");
+            err("wat");
             throw aex;
         }
     }
@@ -147,8 +148,7 @@ public class ImgStuff {
         long closestDist = 1_000_000_000_000_000L;
         double[] mrow = correctDistances[type.idx];
         Ability[] mrow2 = correctEffects[type.idx];
-        for (String shortName : Ability.byShort.keySet()) {
-            Ability ability = Ability.byShort.get(shortName);
+        for (Ability ability : Ability.values) {
             if(ability.isMainOnly && (!isMain || ability.exclusiveType != type)) continue;
             BufferedImage sbi  = scaleBufferedImage(ability.image, ((double)s) / ability.image.getWidth());
             int tmpa = ALPHA_THRESHOLD;

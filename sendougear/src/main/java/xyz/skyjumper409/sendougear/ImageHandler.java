@@ -11,6 +11,7 @@ import xyz.skyjumper409.sendougear.data.*;
 import xyz.skyjumper409.sendougear.data.GearPiece.FullTransform;
 import xyz.skyjumper409.sendougear.data.GearPiece.Type;
 import xyz.skyjumper409.sendougear.data.GearPiece.VisualState;
+import static xyz.skyjumper409.Logger.*;
 
 public class ImageHandler {
     private BufferedImage img;
@@ -21,8 +22,9 @@ public class ImageHandler {
         this.img = inputImage;
         w = img.getWidth();
         h = img.getHeight();
+        // TODO: support more resolutions
         if(w != 1920 || h != 1080)
-            throw new InvalidImageSizeException("Resolutions other than FullHD are not supported yet", new BiInt(w, h)); // TODO
+            throw new InvalidImageSizeException("Resolutions other than FullHD are not supported yet", new BiInt(w, h));
         this.gear = new Gear();
     }
     public static ImageHandler calcGear(java.io.File file) throws IOException {
@@ -62,7 +64,7 @@ public class ImageHandler {
             }
         }
         this.states[type.idx] = closestState;
-        // System.out.println("Determined " + closestState.name + " to be the closest state for GearPiece.Type " + type);
+        debug("Determined " + closestState.name + " to be the closest state for GearPiece.Type " + type);
     }
     public double[][] foundDistances = new double[3][4];
     private void detectGearPiece(Type type) {
@@ -117,10 +119,8 @@ public class ImageHandler {
         // } catch (Exception ex) {
         //     ex.printStackTrace();
         // }
-        // // System.out.println("main:");
-        // // System.out.println(Ability.byShort.keySet().size());
-        // // piece.abilities[0] = closestMainAbility;
-        // // System.out.println(piece.abilities[0]);
+        debug("main:");
+        debug(piece.abilities[0]);
 
         // subs
         for (int i = 0; i < 3; i++) {
