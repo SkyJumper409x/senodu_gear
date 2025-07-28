@@ -12,7 +12,7 @@ public class App {
     JLabel label;
     Color bg = new Color(0x00102f); // Camellia - "#1f1e33 (#00102g Version)" is such a good song
     public static void main(String[] args) {
-
+        (new App()).gui();
     }
     private void gui() {
         frame = new JFrame("sendou_gear");
@@ -31,8 +31,9 @@ public class App {
         label.setMinimumSize(new Dimension(250, 50));
         panel.add(label, BorderLayout.SOUTH);
 
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setVisible(true);
     }
     class OpenActionListener implements ActionListener {
         @Override
