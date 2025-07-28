@@ -14,9 +14,7 @@
     </properties>
 
 
-
     <dependencies>
-    
 
         <dependency>
             <groupId>org.json</groupId>
@@ -25,4 +23,48 @@
         </dependency>
 
     </dependencies>
+    <build>
+      <!-- <pluginManagement>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-jar-plugin</artifactId>
+            <version>2.2</version>
+              <configuration>
+                <archive>
+                  <manifestFile>src/main/resources/META-INF/MANIFEST.MF</manifestFile>
+                </archive>
+              </configuration>
+          </plugin>
+        </plugins>
+      </pluginManagement> -->
+      <plugins>
+
+          <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-assembly-plugin</artifactId>
+              <version>3.3.0</version>
+              <configuration>
+                  <archive>
+                    <manifest>
+                        <mainClass>xyz.skyjumper409.Main</mainClass>
+                    </manifest>
+                  </archive>
+                  <descriptorRefs>
+                      <descriptorRef>jar-with-dependencies</descriptorRef>
+                  </descriptorRefs>
+              </configuration>
+              <executions>
+                  <execution>
+                      <id>make-assembly</id>
+                      <phase>package</phase>
+                      <goals>
+                          <goal>single</goal>
+                      </goals>
+                  </execution>
+              </executions>
+          </plugin>
+      </plugins>
+    </build>
+
 </project>
