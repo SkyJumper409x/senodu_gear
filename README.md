@@ -14,15 +14,13 @@ Assuming you don't have sendou.ink lying around on your computer already, the se
 `rm -rf ./sendou.ink`
 3. your taking too long (there is no third setup step)
 
-After the setup is complete, the java program can be launched with maven, or with an ide that supports maven projects.
+After the setup is complete, the main method of either Main.java, App.java or Test.java can be launched with maven, or with an ide that supports maven projects.
 
 #### Explanation why running the script once is required:
 In order to run this program, you need images of all abilities, with transparent backgrounds. There's a script (sendou_res_convert.sh) which can use the files from a (cloned) [sendou.ink](<https://github.com/sendou-ink/sendou.ink>) directory to create the ability image files. The script must be run in the directory containing it. (It's supposed to get the translations for the abilities, too, but that's bugged atm.)  
 
 
 ### TODO
-- Actually turn the detected build into a sendou.ink link
-- Support using full filepaths as command line arguments
 - Clean up all the spaghetti
 - Hm, I kinda like spaghetti though...
 
