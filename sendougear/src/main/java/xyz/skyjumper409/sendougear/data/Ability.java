@@ -80,7 +80,7 @@ public class Ability {
             this.image = UNKNOWN.image;
         } else {
             this.shortName = shortName.toUpperCase();
-            this.image = IOStuff.readResourceImage("/img/ability" + this.shortName + ".png");
+            this.image = IOStuff.readResourceImage("/img/ability/" + this.shortName + ".png");
         }
         this.translationKey = "ABILITY_" + this.shortName;
         this.internalName = internalName;
