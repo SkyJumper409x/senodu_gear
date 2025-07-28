@@ -8,6 +8,8 @@ import java.util.HashMap;
 
 import org.json.JSONObject;
 
+import xyz.skyjumper409.Logger;
+
 public class I18n {
     private static final HashMap<String, I18n> availableLocales = new HashMap<>();
     public static final I18n en;
@@ -76,7 +78,7 @@ public class I18n {
         return keySet.contains(translationKey);
     }
     protected final String getTranslationDirect(String translationKey) {
-        // System.out.println("getTranslationDirect(" + translationKey + ")");
+        Logger.debug("getTranslationDirect(" + translationKey + ")");
         return translationsObject.getString(translationKey);
     }
     public String getTranslation(String translationKey) {

@@ -22,8 +22,9 @@ import static xyz.skyjumper409.Logger.*;
 public class Test {
     static File examplesDir = new File(Const.resourcesDir, "../../../reference images/");
     static File testDir = new File(Const.resourcesDir, "../../../test builds/");
-    public static final Config cfg = new Config();
     public static void main(String[] args) throws Exception {
+        System.out.println("&build2=U,U,U,U,U,U,U,U,U,U,U,U&lde=0&focused=1".replaceAll(",", "%2C"));
+        System.exit(0);
         for (int i = 0; i < 3; i++)
             for (int j = 0; j < 4; j++)
                 defaultAbilities[i][j] = Ability.NULL_ABILITY;
@@ -33,9 +34,15 @@ public class Test {
         int correctCount = 0;
         if(args.length == 0) {
             for (File f : fs) {
-                boolean result = testThing(f);
-                results.add(result);
-                if(result) correctCount++;
+                try {
+                    boolean result = testThing(f);
+                    results.add(result);
+                    if(result) correctCount++;
+                } catch (Exception ex) {
+                    ex.printStackTrace(System.err);
+                    info("<exeption occured>");
+                    results.add(false);
+                }
             }
             info("results: " + results);
             info("correct: " + correctCount + "/" + fs.length);
@@ -55,14 +62,21 @@ public class Test {
     private static final Ability[][] defaultAbilities = new Ability[3][4];
     private static boolean testThing(File file) throws IOException {
         String absPath = file.getAbsolutePath();
+        info("");
         info(absPath.substring(absPath.lastIndexOf("/") + 1));
         File jsonFile = new File(absPath.substring(0, absPath.lastIndexOf(".")) + ".json");
         VisualState[] testStates = new VisualState[3];
         if(jsonFile.isFile()) {
             abilitiesFromJsonFile(jsonFile, ImgStuff.correctEffects, testStates);
         } else {
-            System.err.println("[WARN] missing json file");
+            warn("missing json file");
             ImgStuff.correctEffects = defaultAbilities;
+        }
+        for (int i = 0; i < testStates.length; i++) {
+            if(testStates[i] == VisualState.SELECTED) {
+                err("state \"selected\" is not supported yet");
+                return false;
+            }
         }
         ImageHandler ih = ImageHandler.calcGear(ImageIO.read(file));
         info(ih.getDetectedStates());
@@ -93,7 +107,7 @@ public class Test {
         ImageHandler ih = ImageHandler.calcGear(ImageIO.read(new File(testDir, filename + ".png")));
         // info(ih);
         info("Dists:");
-        info("found" + (new String(new char[(5 + cfg.logDigitsPrecision) * 4 - 5]).replace("\0", " ")) + "\tcorrect");
+        info("found" + (new String(new char[(5 + Main.cfg.logDigitsPrecision) * 4 - 5]).replace("\0", " ")) + "\tcorrect");
         for (int i = 0; i < 3; i++)
             info((Arrays.toString(ih.foundDistances[i]) + "\t" + Arrays.toString(ImgStuff.correctDistances[i])).replaceAll("\\.0",""));
         info("Gear:");

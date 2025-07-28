@@ -28,7 +28,7 @@ public class Logger {
         }
     }
     public static void log(Level level, Object message) {
-        if((level == Level.DEBUG) && !Test.cfg.enableDebugLogging) return;
+        if((level == Level.DEBUG) && !Main.cfg.enableDebugLogging) return;
         level.ps().println("[" + level + "] " + message);
     }
     public static void log(Level level, String message, Object... args) {

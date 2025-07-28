@@ -6,7 +6,7 @@ import java.util.Arrays;
 
 import javax.imageio.ImageIO;
 
-import xyz.skyjumper409.Test;
+import xyz.skyjumper409.Main;
 import xyz.skyjumper409.sendougear.data.*;
 import xyz.skyjumper409.sendougear.data.GearPiece.FullTransform;
 import xyz.skyjumper409.sendougear.data.GearPiece.Type;
@@ -113,7 +113,7 @@ public class ImageHandler {
         // }
         MatchedAbility mainMatch = ImgStuff.findClosestAbility(img, t, type, 0, state.abilityBgImg);
         piece.abilities[0] = mainMatch.a();
-        foundDistances[type.idx][0] = Math.floor(Test.cfg.logMulti() * Math.sqrt(mainMatch.dist()));
+        foundDistances[type.idx][0] = Math.floor(Main.cfg.logMulti() * Math.sqrt(mainMatch.dist()));
         // try {
         //     ImageIO.write(scaledBufferedImage, "PNG", new FileOutputStream("../../../tmp/" + (ImgStuff.imgc++) + "_res.png"));
         // } catch (Exception ex) {
@@ -156,7 +156,7 @@ public class ImageHandler {
             // }
             MatchedAbility subMatch = ImgStuff.findClosestAbility(img, t, type, i + 1, state.abilityBgImg);
             piece.abilities[i + 1] = subMatch.a();
-            foundDistances[type.idx][i + 1] = Math.floor(Test.cfg.logMulti() * Math.sqrt(subMatch.dist()));
+            foundDistances[type.idx][i + 1] = Math.floor(Main.cfg.logMulti() * Math.sqrt(subMatch.dist()));
             // try {
             //     ImageIO.write(scaledBufferedImage, "PNG", new FileOutputStream("../../../tmp/" + (ImgStuff.imgc++) + "_res.png"));
             // } catch (Exception ex) {

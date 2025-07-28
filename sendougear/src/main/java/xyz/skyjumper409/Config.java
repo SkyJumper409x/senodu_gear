@@ -2,6 +2,7 @@ package xyz.skyjumper409;
 
 public class Config {
     public static final int
+    GEAR_LOG_MODE_NONE = 0b00,
     GEAR_LOG_MODE_LINK = 0b01,
     GEAR_LOG_MODE_EFFS = 0b10,
     GEAR_LOG_MODE_BOTH = 0b11;
@@ -25,7 +26,7 @@ public class Config {
         this.enableDebugLogging = enableDebugLogging;
     }
     public void setGearLogMode(int gearLogMode) {
-        if(0 < gearLogMode && gearLogMode <= 0b11)
+        if(0 <= gearLogMode && gearLogMode <= 0b11)
             this.gearLogMode = gearLogMode;
     }
     public boolean isImageLoggingEnabled() {
@@ -39,6 +40,9 @@ public class Config {
     }
     public boolean isDebugLoggingEnabled() {
         return enableDebugLogging;
+    }
+    public boolean doLogGear() {
+        return gearLogMode > 0;
     }
     public boolean doLogGearEffs() {
         return (gearLogMode & GEAR_LOG_MODE_EFFS) == GEAR_LOG_MODE_EFFS;

@@ -1,5 +1,6 @@
 package xyz.skyjumper409.sendougear.data;
 
+import xyz.skyjumper409.Main;
 import xyz.skyjumper409.sendougear.data.GearPiece.Type;
 
 public class Gear {
@@ -24,22 +25,25 @@ public class Gear {
         return s.substring(1);
     }
     public String toAbilitiesString() {
-        String s = "";
-        for (int i = 0; i < pieces.length; i++) {
-            s += pieces[i].toAbilitiesString();
-            s += "\n";
-        }
-        s += "https://sendou.ink/analyzer?weapon=0&build=";
-        for (int i = 0; i < pieces.length; i++) {
-            Ability[] abilities = pieces[i].abilities;
-            for (int j = 0; j < abilities.length; j++) {
-                s += abilities[j].shortName;
-                s += "%2C"; // just commas, but sendou.ink urlencodes em for some reason
+        if(!Main.cfg.doLogGear()) return this.getClass().getName();
+        StringBuilder sb = new StringBuilder("");
+        if(Main.cfg.doLogGearEffs())
+            for (int i = 0; i < pieces.length; i++)
+                sb = sb.append(pieces[i].toAbilitiesString()).append("\n");
+        if(Main.cfg.doLogGearEffs()) {
+            sb = sb.append("https://sendou.ink/analyzer?weapon=0&build=");
+            for (int i = 0; i < pieces.length; i++) {
+                Ability[] abilities = pieces[i].abilities;
+                for (int j = 0; j < abilities.length; j++) {
+                    // %2C is just a comma, but sendou.ink urlencodes commas for some reason
+                    String name = abilities[j].shortName;
+                    if(abilities[j] == Ability.UNKNOWN) name = "U";
+                    sb = sb.append(name).append("%2C");
+                }
             }
-        }
-        if(s.contains("UNKNOWN"))
-            s = s.replaceAll("UNKNOWN", "U");
-        s = s.substring(0, s.length() - 3) + "&build2=U,U,U,U,U,U,U,U,U,U,U,U&lde=0&focused=1".replaceAll(",", "%2C");
-        return s;
+            sb = sb.delete(sb.length() - 3, sb.length());
+            sb = sb.append("&build2=U%2CU%2CU%2CU%2CU%2CU%2CU%2CU%2CU%2CU%2CU%2CU&lde=0&focused=1");
+        } else sb.deleteCharAt(sb.length() - 1);
+        return sb.toString();
     }
 }

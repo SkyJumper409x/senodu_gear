@@ -9,7 +9,7 @@ import java.io.FileOutputStream;
 
 import javax.imageio.ImageIO;
 
-import xyz.skyjumper409.Test;
+import xyz.skyjumper409.Main;
 import xyz.skyjumper409.sendougear.data.*;
 import xyz.skyjumper409.sendougear.data.GearPiece.FullTransform;
 import xyz.skyjumper409.sendougear.data.GearPiece.Type;
@@ -126,7 +126,7 @@ public class ImgStuff {
         logImage(img, imgc+"");
     }
     public static void logImage(BufferedImage img, String filename) {
-        if(Test.cfg.isImageLoggingEnabled())
+        if(Main.cfg.isImageLoggingEnabled())
         try {
             ImageIO.write(img, "PNG", new FileOutputStream("../../../tmp/" + filename + ".png"));
         } catch (Exception ex) {
@@ -163,7 +163,7 @@ public class ImgStuff {
                 ALPHA_THRESHOLD_B = tmpb;
             }
             if(mrow2[abilityIdx].shortName.equals(ability.shortName)) {
-                mrow[abilityIdx] = Math.floor(Test.cfg.logMulti() * Math.sqrt(dist));
+                mrow[abilityIdx] = Math.floor(Main.cfg.logMulti() * Math.sqrt(dist));
             }
             if(!isMain) {
                 long maybeClosestDist = dist;
@@ -191,7 +191,7 @@ public class ImgStuff {
                 scaledBufferedImage = sbi;
             }
         }
-        if(Test.cfg.isImageLoggingEnabled())
+        if(Main.cfg.isImageLoggingEnabled())
             logImage(scaledBufferedImage, (imgc++) + "_res");
         return new MatchedAbility(closestAbility, closestDist);
     }
