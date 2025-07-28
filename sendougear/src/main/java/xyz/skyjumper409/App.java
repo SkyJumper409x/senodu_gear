@@ -3,10 +3,9 @@ package xyz.skyjumper409;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
-import java.io.IOException;
+import java.net.URI;
 
 import javax.swing.*;
-import javax.swing.filechooser.FileFilter;
 
 import xyz.skyjumper409.sendougear.ImageHandler;
 import xyz.skyjumper409.sendougear.data.InvalidImageSizeException;
@@ -16,31 +15,61 @@ public class App {
     JPanel panel;
     JLabel label, resultLabel;
     JButton button;
+    Font font;
     Color
         fg = Color.WHITE,
         bg = new Color(0x00102f); // Camellia - "#1f1e33 (#00102g Version)" is such a good song
     public static void main(String[] args) {
         (new App()).gui();
     }
+    float fontSmall = 20, fontLarge = 30;
+    private void createFont() {
+        try {
+            font = Font.createFont(Font.TRUETYPE_FONT, getClass().getResourceAsStream("/liberationsans/LiberationMono-Bold.ttf"));
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            font = Font.getFont("Arial");
+        }
+    }
     private void gui() {
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch(Exception ex) {
+            ex.printStackTrace();
+        }
+        createFont();
+        Dimension
+            labelSize = new Dimension(250, 50),
+            buttonSize = new Dimension(250, 250);
+
         frame = new JFrame("sendou_gear");
         panel = new JPanel(new BorderLayout(0,0));
         frame.setContentPane(panel);
 
         label = new JLabel("");
-        label.setFont(label.getFont().deriveFont(20.0f));
-        label.setMinimumSize(new Dimension(250, 50));
+        label.setFont(font.deriveFont(fontSmall));
+        label.setMinimumSize(labelSize);
+        label.setPreferredSize(labelSize);
         panel.add(label, BorderLayout.NORTH);
 
         resultLabel = new JLabel();
-        resultLabel.setMinimumSize(new Dimension(250, 50));
+        resultLabel.setFont(font.deriveFont(fontSmall));
+        resultLabel.setMinimumSize(labelSize);
+        resultLabel.setPreferredSize(labelSize);
         panel.add(resultLabel, BorderLayout.SOUTH);
 
-        button = new JButton("Open image file...");
-        button.setFont(button.getFont().deriveFont(30.0f));
+        button = new JButton("Select File");
+        button.setFont(font.deriveFont(fontLarge));
         button.addActionListener(new OpenActionListener());
-        button.setMinimumSize(new Dimension(250, 250));
+        button.setMinimumSize(buttonSize);
+        button.setPreferredSize(buttonSize);
         panel.add(button, BorderLayout.CENTER);
+
+        frame.setForeground(fg);
+        panel.setForeground(fg);
+        label.setForeground(fg);
+        resultLabel.setForeground(fg);
+        button.setForeground(fg);
 
         frame.setBackground(bg);
         panel.setBackground(bg);
@@ -48,58 +77,99 @@ public class App {
         resultLabel.setBackground(bg);
         button.setBackground(bg);
 
+        frame.setBounds(400, 400, 400, 400);
         frame.pack();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
+    }
+    private void openLink(String urlString) {
+        try {
+            Desktop d = Desktop.getDesktop();
+            if(d.isSupported(Desktop.Action.BROWSE))
+                d.browse(URI.create(urlString));
+            else
+                Runtime.getRuntime().exec(new String[]{"xdg-open", urlString});
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
     class OpenActionListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent ev) {
             try {
                 button.setEnabled(false);
-                JFileChooser jfc = new JFileChooser();
-                jfc.setFileFilter(new FileFilter() {
-                    @Override
-                    public boolean accept(File f) {
-                        String s = f.getAbsolutePath();
-                        // why are there two extensions for jpegs
-                        // also this could probably be done with like reading the first 4 bytes and checking the header,
-                        // but I'm lazy and this probably works, too.
-                        return s.endsWith(".png") || s.endsWith(".jpg") || s.endsWith(".jpeg");
-                    }
-                    @Override
-                    public String getDescription() {
-                        return "JPEGs & PNGs";
-                    }
+                FileDialog fd = new FileDialog(frame, "Choose a file", FileDialog.LOAD);
+                fd.setDirectory("/home/lynn");
+                // fd.setFile("*.png");
+                fd.setFilenameFilter((parent, filename) -> {
+                    return filename.endsWith(".png");
                 });
-                int returnState = jfc.showOpenDialog(frame);
-                switch (returnState) {
-                    case JFileChooser.CANCEL_OPTION:
-                        showInfo("operation was cancelled");
-                        break;
-                    case JFileChooser.ERROR_OPTION:
-                        showWarn("operation errored");
-                        break;
-                    case JFileChooser.APPROVE_OPTION:
-                        File file = jfc.getSelectedFile();
-                        try {
-                            ImageHandler.calcGear(file);
-                        } catch (InvalidImageSizeException uoex) {
-                            if(uoex.getMessage().contains("FullHD")) {
-                                showError("image must be 1920x1080, got");
-                            }
-                        } catch (IOException ioex) {
-                            ioex.printStackTrace();
-                            showWarn("");
-                        }
-                        break;
-                    default:
-                        System.err.println("[WARN] unknown JFileChooser return value");
-                        showWarn("something went wrong");
-                        break;
+                fd.setVisible(true);
+                fd.setMode(FileDialog.LOAD);
+                String filename = fd.getFile();
+                if (filename == null) {
+                    showInfo("operation cancelled");
+                } else {
+                    System.out.println("You chose " + filename);
+                    String filepath = fd.getDirectory() + filename;
+                    String s = ImageHandler.calcGear(new File(filepath)).gear.toURLString();
+                    resultLabel.setText(s);
+                    openLink(s);
+                    showInfo("all good");
                 }
+                // JFileChooser jfc = new JFileChooser();
+                // jfc.setFileFilter(new FileFilter() {
+                //     @Override
+                //     public boolean accept(File f) {
+                //         if(f.isDirectory()) return true;
+                //         String s = f.getAbsolutePath();
+                //         // why are there two extensions for jpegs
+                //         // also this could probably be done with like reading the first 4 bytes and checking the header,
+                //         // but I'm lazy and this probably works, too.
+                //         return s.endsWith(".png") || s.endsWith(".jpg") || s.endsWith(".jpeg");
+                //     }
+                //     @Override
+                //     public String getDescription() { return "JPEGs & PNGs"; }
+                // });
+                // jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+                // int returnState = jfc.showOpenDialog(frame);
+                // System.out.println(returnState);
+                // switch (returnState) {
+                //     case JFileChooser.CANCEL_OPTION:
+                //         showInfo("operation was cancelled");
+                //         return;
+                //     case JFileChooser.ERROR_OPTION:
+                //         showWarn("operation errored");
+                //         return;
+                //     case JFileChooser.APPROVE_OPTION:
+                //         File file = jfc.getSelectedFile();
+                //         if(!file.exists()) {
+                //             showError("file not found");
+                //             return;
+                //         }
+                //         try {
+                //             Gear g = ImageHandler.calcGear(file).gear;
+                //             String s = g.toURLString();
+                //             resultLabel.setText(s);
+                //             openLink(s);
+                //         } catch (InvalidImageSizeException uoex) {
+                //             if(uoex.getMessage().contains("FullHD")) {
+                //                 showError(uoex.getMessage());
+                //             }
+                //         } catch (IOException ioex) {
+                //             ioex.printStackTrace();
+                //             showWarn("something went wrong (%s)", ioex.getMessage());
+                //         }
+                //         break;
+                //     default:
+                //         System.err.println("[WARN] unknown JFileChooser return value");
+                //         showWarn("something went wrong");
+                //         return;
+                // }
                 showInfo("all good");
-            } catch (Exception ex) {
+            } catch (InvalidImageSizeException uoex) {
+                showError(uoex.getMessage());
+            }  catch (Exception ex) {
                 ex.printStackTrace();
             } finally {
                 button.setEnabled(true);
