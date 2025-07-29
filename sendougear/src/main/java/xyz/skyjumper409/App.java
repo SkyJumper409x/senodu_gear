@@ -19,6 +19,8 @@ public class App {
     Color
         fg = Color.WHITE,
         bg = new Color(0x00102f); // Camellia - "#1f1e33 (#00102g Version)" is such a good song
+    // String labelFormatString = "<html><p style=\"width:%dpx\">%s</p></html>";
+    String labelFormatString = "<html><p>%s</p></html>";
     public static void main(String[] args) {
         (new App()).gui();
     }
@@ -31,6 +33,12 @@ public class App {
             font = Font.getFont("Arial");
         }
     }
+    private Dimension getScreenDimension() {
+        GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+        int width = gd.getDisplayMode().getWidth();
+        int height = gd.getDisplayMode().getHeight();
+        return new Dimension(width, height);
+    }
     private void gui() {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -38,9 +46,15 @@ public class App {
             ex.printStackTrace();
         }
         createFont();
+        int frameWidth = 300;
         Dimension
-            labelSize = new Dimension(250, 50),
-            buttonSize = new Dimension(250, 250);
+            labelSize = new Dimension(frameWidth, 100),
+            buttonSize = new Dimension(frameWidth, 250);
+
+        int frameHeight = labelSize.height * 2 + buttonSize.height;
+        Dimension sd = getScreenDimension();
+        // center frame on screen
+        Dimension framePos = new Dimension((sd.width / 2) - (frameWidth / 2), (sd.height / 2) - (frameHeight / 2));
 
         frame = new JFrame("sendou_gear");
         panel = new JPanel(new BorderLayout(0,0));
@@ -77,8 +91,12 @@ public class App {
         resultLabel.setBackground(bg);
         button.setBackground(bg);
 
-        frame.setBounds(400, 400, 400, 400);
-        frame.pack();
+        frame.setMinimumSize(new Dimension(frameWidth, frameHeight));
+        frame.setPreferredSize(new Dimension(frameWidth, frameHeight));
+        frame.setMaximumSize(new Dimension(frameWidth * 2, frameHeight * 2));
+        frame.setAlwaysOnTop(true);
+        frame.setBounds(framePos.width, framePos.height, frameWidth, frameHeight);
+        // frame.pack();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
     }
@@ -113,7 +131,7 @@ public class App {
                     System.out.println("You chose " + filename);
                     String filepath = fd.getDirectory() + filename;
                     String s = ImageHandler.calcGear(new File(filepath)).gear.toURLString();
-                    resultLabel.setText(s);
+                    resultLabel.setText(String.format(labelFormatString, s));
                     openLink(s);
                     showInfo("all good");
                 }
@@ -150,7 +168,7 @@ public class App {
                 //         try {
                 //             Gear g = ImageHandler.calcGear(file).gear;
                 //             String s = g.toURLString();
-                //             resultLabel.setText(s);
+                //             resultLabel.setText(String.format(labelFormatString, s));
                 //             openLink(s);
                 //         } catch (InvalidImageSizeException uoex) {
                 //             if(uoex.getMessage().contains("FullHD")) {
@@ -180,7 +198,7 @@ public class App {
     Color[] logCols = new Color[]{Color.WHITE, Color.YELLOW, Color.RED};
     void labelThing(int level, String message, Object... args) {
         label.setForeground(logCols[level]);
-        label.setText(args == null || args.length < 1 ? message : String.format(message, args));
+        label.setText(String.format(labelFormatString, args == null || args.length < 1 ? message : String.format(message, args)));
     }
     void labelThing(int level, String message) {
         labelThing(level, message, (Object[])null);
