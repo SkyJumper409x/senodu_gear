@@ -129,7 +129,7 @@ public class App {
                 if (filename == null) {
                     showInfo("operation cancelled");
                 } else {
-                    System.out.println("You chose " + filename);
+                    Logger.debug("You chose " + filename);
                     String filepath = fd.getDirectory() + filename;
                     resultGear = ImageHandler.calcGear(new File(filepath)).gear;
                     String s = resultGear.toURLString();
