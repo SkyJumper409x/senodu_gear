@@ -70,7 +70,7 @@ public class App {
         resultLabel.setFont(font.deriveFont(fontSmall));
         resultLabel.setMinimumSize(labelSize);
         resultLabel.setPreferredSize(labelSize);
-        panel.add(resultLabel, BorderLayout.SOUTH);
+        // panel.add(resultLabel, BorderLayout.SOUTH);
 
         button = new JButton("Select File");
         button.setFont(font.deriveFont(fontLarge));
@@ -96,7 +96,7 @@ public class App {
         frame.setMaximumSize(new Dimension(frameWidth * 2, frameHeight * 2));
         frame.setAlwaysOnTop(true);
         frame.setBounds(framePos.width, framePos.height, frameWidth, frameHeight);
-        // frame.pack();
+        frame.pack();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
     }
