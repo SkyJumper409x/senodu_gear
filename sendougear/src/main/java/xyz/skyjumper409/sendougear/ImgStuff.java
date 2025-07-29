@@ -115,6 +115,14 @@ public class ImgStuff {
     public static BufferedImage scaleBufferedImage(BufferedImage img, double scaleFac) {
         return scaleBufferedImage(img, scaleFac, AffineTransformOp.TYPE_BILINEAR);
     }
+    public static BufferedImage scaleBufferedImageToWidth(BufferedImage img, int targetW) {
+        double scaleFac = ((double) targetW) / img.getWidth();
+        return scaleBufferedImage(img, scaleFac);
+    }
+    public static BufferedImage scaleBufferedImageToHeight(BufferedImage img, int targetH) {
+        double scaleFac = ((double) targetH) / img.getHeight();
+        return scaleBufferedImage(img, scaleFac);
+    }
     public static BufferedImage subimage(BufferedImage img, BiInt c, int s) {
         return img.getSubimage(
             c.x(),
@@ -150,7 +158,7 @@ public class ImgStuff {
         Ability[] mrow2 = correctEffects[type.idx];
         for (Ability ability : Ability.values) {
             if(ability.isMainOnly && (!isMain || ability.exclusiveType != type)) continue;
-            BufferedImage sbi  = scaleBufferedImage(ability.image, ((double)s) / ability.image.getWidth());
+            BufferedImage sbi  = scaleBufferedImageToWidth(ability.image, s);
             int tmpa = ALPHA_THRESHOLD;
             int tmpb = ALPHA_THRESHOLD_B;
             if(overrideCB && ability.shortName.equalsIgnoreCase("CB")) {

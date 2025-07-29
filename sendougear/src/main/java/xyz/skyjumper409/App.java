@@ -2,12 +2,17 @@ package xyz.skyjumper409;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.geom.*;
+import java.awt.image.*;
 import java.io.File;
 import java.net.URI;
 
 import javax.swing.*;
 
+import xyz.skyjumper409.sendougear.IOStuff;
 import xyz.skyjumper409.sendougear.ImageHandler;
+import xyz.skyjumper409.sendougear.data.Ability;
+import xyz.skyjumper409.sendougear.data.Gear;
 import xyz.skyjumper409.sendougear.data.InvalidImageSizeException;
 
 public class App {
@@ -20,7 +25,8 @@ public class App {
         fg = Color.WHITE,
         bg = new Color(0x00102f); // Camellia - "#1f1e33 (#00102g Version)" is such a good song
     // String labelFormatString = "<html><p style=\"width:%dpx\">%s</p></html>";
-    String labelFormatString = "<html><p>%s</p></html>";
+    static final String labelFormatString = "<html><p>%s</p></html>";
+    Gear resultGear = null;
     public static void main(String[] args) {
         (new App()).gui();
     }
@@ -48,7 +54,7 @@ public class App {
         createFont();
         int frameWidth = 300;
         Dimension
-            labelSize = new Dimension(frameWidth, 100),
+            labelSize = new Dimension(frameWidth, Math.max(100, ImagePanel.bgh * 3)),
             buttonSize = new Dimension(frameWidth, 250);
 
         int frameHeight = labelSize.height * 2 + buttonSize.height;
@@ -64,7 +70,9 @@ public class App {
         label.setFont(font.deriveFont(fontSmall));
         label.setMinimumSize(labelSize);
         label.setPreferredSize(labelSize);
-        panel.add(label, BorderLayout.NORTH);
+        ImagePanel labelPanel = new ImagePanel();
+        labelPanel.add(label);
+        panel.add(labelPanel, BorderLayout.NORTH);
 
         resultLabel = new JLabel();
         resultLabel.setFont(font.deriveFont(fontSmall));
@@ -116,6 +124,7 @@ public class App {
         public void actionPerformed(ActionEvent ev) {
             try {
                 button.setEnabled(false);
+                resultGear = null;
                 FileDialog fd = new FileDialog(frame, "Choose a file", FileDialog.LOAD);
                 fd.setDirectory("/home/lynn");
                 // fd.setFile("*.png");
@@ -130,10 +139,14 @@ public class App {
                 } else {
                     System.out.println("You chose " + filename);
                     String filepath = fd.getDirectory() + filename;
-                    String s = ImageHandler.calcGear(new File(filepath)).gear.toURLString();
+                    resultGear = ImageHandler.calcGear(new File(filepath)).gear;
+                    String s = resultGear.toURLString();
                     resultLabel.setText(String.format(labelFormatString, s));
                     openLink(s);
-                    showInfo("all good");
+                    if(ImagePanel.canDisplayGear)
+                        showInfo("");
+                    else
+                        showInfo("all good");
                 }
                 // JFileChooser jfc = new JFileChooser();
                 // jfc.setFileFilter(new FileFilter() {
@@ -184,7 +197,7 @@ public class App {
                 //         showWarn("something went wrong");
                 //         return;
                 // }
-                showInfo("all good");
+                // showInfo("all good");
             } catch (InvalidImageSizeException uoex) {
                 showError(uoex.getMessage());
             }  catch (Exception ex) {
@@ -192,6 +205,117 @@ public class App {
             } finally {
                 button.setEnabled(true);
             }
+        }
+    }
+    final Color abilityDisplayBg = new Color(0xa1a1a1);
+    // from https://docs.oracle.com/javase/tutorial/2d/advanced/examples/Composite.java
+    class ImagePanel extends JPanel {
+        static final BufferedImage bgMain, bgSub;
+        static final int bgmw, bgsw, bgh;
+        static final boolean canDisplayGear;
+        private static AffineTransform[][] abilityBgTransforms = new AffineTransform[3][4];
+        private static AffineTransform[][] abilityTransforms = new AffineTransform[3][4];
+        private static final double mainScale = 43.0 / 126.0, subScale = 34.0 / 126.0;
+        static {
+            BufferedImage bgm = null, bgs = null;
+            boolean cdg = false;
+            try {
+                bgm = IOStuff.readResourceImage("/img/resting_bg_for_display_main.png");
+                bgs = IOStuff.readResourceImage("/img/resting_bg_for_display_sub.png");
+                cdg = true;
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            } finally {
+                bgMain = bgm;
+                bgSub = bgs;
+                canDisplayGear = cdg;
+                if(cdg) {
+                    bgmw = bgm.getWidth();
+                    bgsw = bgs.getWidth();
+                    bgh = bgm.getHeight();
+                } else {
+                    bgmw = 0;
+                    bgsw = 0;
+                    bgh = 0;
+                }
+                if(cdg)
+                for (int i = 0; i < 3; i++) {
+                    int x = 0;
+                    int y = bgh * i;
+                    abilityBgTransforms[i][0] = new AffineTransform(1, 0, 0, 1, x,     y    );
+                    if(i == 0) {
+                        AffineTransform at = abilityBgTransforms[i][0];
+                        System.out.printf("(%s , %s) (%s , %s) (%s , %s)%n", at.getTranslateX(), at.getTranslateY(), at.getShearX(), at.getShearY(), at.getScaleX(), at.getScaleY());
+                    }
+                    abilityTransforms[i][0]   = new AffineTransform(1, 0, 0, 1, x + 1, y + 2);
+                    abilityTransforms[i][0].scale(mainScale, mainScale);
+                    for (int j = 1; j < 4; j++) {
+                        x = bgmw + bgsw * (j - 1);
+                        abilityBgTransforms[i][j] = new AffineTransform(1, 0, 0, 1, x,     y    );
+                        abilityTransforms[i][j]   = new AffineTransform(1, 0, 0, 1, x + 3, y + 6);
+                        abilityTransforms[i][j].scale(subScale, subScale);
+                    }
+                }
+            }
+        }
+        public ImagePanel(){}
+
+        @Override
+        public Dimension getMinimumSize() {
+            return new Dimension();
+        }
+        public void paintComponent(Graphics g) {
+            super.paintComponent( g );
+            Graphics2D g2 = (Graphics2D) g;
+
+
+            Dimension d = getSize();
+            // Clears the previously drawn image.
+            g2.setColor(abilityDisplayBg);
+            g2.fillRect(0, 0, d.width, d.height);
+            if(canDisplayGear) {
+                BufferedImage buffImg = gearImage();
+                if(buffImg != null) {
+                    // Draws the buffered image.
+                    g2.drawImage(buffImg, null, 0, 0);
+                }
+            }
+        }
+        public BufferedImage gearImage() {
+            if(resultGear == null)
+                return null;
+            BufferedImage gearImage = new BufferedImage(bgmw + (bgsw * 3), bgh * 3, BufferedImage.TYPE_INT_ARGB);
+            Graphics2D gbi = gearImage.createGraphics();
+            for (int i = 0; i < 3; i++) {
+                Ability[] abilities = resultGear.get(i).abilities;
+                for (int j = 0; j < 4; j++) {
+                    gbi.drawRenderedImage(j == 0 ? bgMain : bgSub, abilityBgTransforms[i][j]);
+                    Ability a = abilities[j];
+                    if(a != null)
+                        gbi.drawRenderedImage(a.image, abilityTransforms[i][j]);
+                }
+            }
+            return gearImage;
+        }
+        public BufferedImage exampleImage() {
+            Dimension d = getSize();
+            int w = d.width;
+            int h = d.height;
+            // Creates the buffered image.
+            BufferedImage buffImg = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+            Graphics2D gbi = buffImg.createGraphics();
+
+
+            int rectx = w/4;
+            int recty = h/4;
+
+            // Draws the rectangle and ellipse into the buffered image.
+            gbi.setColor(new Color(0.0f, 0.0f, 1.0f, 1.0f));
+            gbi.fill(new Rectangle2D.Double(rectx, recty, 150, 100));
+            gbi.setColor(new Color(1.0f, 0.0f, 0.0f, 1.0f));
+            gbi.setComposite(AlphaComposite.SrcOver);
+            gbi.fill(new Ellipse2D.Double(rectx+rectx/2,recty+recty/2,150,100));
+            return buffImg;
         }
     }
     public static final int INFO = 0, WARN = 1, ERROR = 2;
