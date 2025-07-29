@@ -18,7 +18,7 @@ import xyz.skyjumper409.sendougear.data.InvalidImageSizeException;
 public class App {
     JFrame frame;
     JPanel panel;
-    JLabel label, resultLabel;
+    JLabel label;
     JButton button;
     Font font;
     Color
@@ -52,12 +52,12 @@ public class App {
             ex.printStackTrace();
         }
         createFont();
-        int frameWidth = 300;
+        int frameWidth = 250;
         Dimension
             labelSize = new Dimension(frameWidth, Math.max(100, ImagePanel.bgh * 3)),
-            buttonSize = new Dimension(frameWidth, 250);
+            buttonSize = new Dimension(frameWidth, 200);
 
-        int frameHeight = labelSize.height * 2 + buttonSize.height;
+        int frameHeight = labelSize.height + buttonSize.height;
         Dimension sd = getScreenDimension();
         // center frame on screen
         Dimension framePos = new Dimension((sd.width / 2) - (frameWidth / 2), (sd.height / 2) - (frameHeight / 2));
@@ -74,12 +74,6 @@ public class App {
         labelPanel.add(label);
         panel.add(labelPanel, BorderLayout.NORTH);
 
-        resultLabel = new JLabel();
-        resultLabel.setFont(font.deriveFont(fontSmall));
-        resultLabel.setMinimumSize(labelSize);
-        resultLabel.setPreferredSize(labelSize);
-        // panel.add(resultLabel, BorderLayout.SOUTH);
-
         button = new JButton("Select File");
         button.setFont(font.deriveFont(fontLarge));
         button.addActionListener(new OpenActionListener());
@@ -90,13 +84,11 @@ public class App {
         frame.setForeground(fg);
         panel.setForeground(fg);
         label.setForeground(fg);
-        resultLabel.setForeground(fg);
         button.setForeground(fg);
 
         frame.setBackground(bg);
         panel.setBackground(bg);
         label.setBackground(bg);
-        resultLabel.setBackground(bg);
         button.setBackground(bg);
 
         frame.setMinimumSize(new Dimension(frameWidth, frameHeight));
@@ -141,7 +133,6 @@ public class App {
                     String filepath = fd.getDirectory() + filename;
                     resultGear = ImageHandler.calcGear(new File(filepath)).gear;
                     String s = resultGear.toURLString();
-                    resultLabel.setText(String.format(labelFormatString, s));
                     openLink(s);
                     if(ImagePanel.canDisplayGear)
                         showInfo("");
@@ -243,10 +234,6 @@ public class App {
                     int x = 0;
                     int y = bgh * i;
                     abilityBgTransforms[i][0] = new AffineTransform(1, 0, 0, 1, x,     y    );
-                    if(i == 0) {
-                        AffineTransform at = abilityBgTransforms[i][0];
-                        System.out.printf("(%s , %s) (%s , %s) (%s , %s)%n", at.getTranslateX(), at.getTranslateY(), at.getShearX(), at.getShearY(), at.getScaleX(), at.getScaleY());
-                    }
                     abilityTransforms[i][0]   = new AffineTransform(1, 0, 0, 1, x + 1, y + 2);
                     abilityTransforms[i][0].scale(mainScale, mainScale);
                     for (int j = 1; j < 4; j++) {
@@ -277,7 +264,7 @@ public class App {
                 BufferedImage buffImg = gearImage();
                 if(buffImg != null) {
                     // Draws the buffered image.
-                    g2.drawImage(buffImg, null, 0, 0);
+                    g2.drawImage(buffImg, null, (getWidth() - buffImg.getWidth()) / 2, 4);
                 }
             }
         }
